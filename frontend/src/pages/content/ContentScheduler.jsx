@@ -24,6 +24,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tab,
+  Tabs,
 } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
@@ -32,7 +34,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import DoneIcon from '@mui/icons-material/Done';
+
+// Import calendar components
+import CalendarView from '../../components/calendar/CalendarView';
+import ScheduleList from '../../components/calendar/ScheduleList';
+
 import { fetchPosts, fetchPost, updatePost } from '../../store/slices/postSlice';
 import { fetchSchedules, createSchedule, updateSchedule, deleteSchedule } from '../../store/slices/scheduleSlice';
 
@@ -59,6 +67,7 @@ const ContentScheduler = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState(null);
   const [schedulingError, setSchedulingError] = useState('');
+  const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
   
   // Fetch data on component mount
   useEffect(() => {
@@ -79,7 +88,17 @@ const ContentScheduler = () => {
     }
   }, [postId, currentPost]);
   
-  // Handle date change
+  // Handle view mode change
+  const handleViewModeChange = (event, newValue) => {
+    setViewMode(newValue);
+  };
+  
+  // Handle calendar date selection
+  const handleCalendarDateSelect = (date) => {
+    setSelectedDate(date);
+  };
+  
+  // Handle date change for date picker
   const handleDateChange = (newDate) => {
     setSelectedDate(newDate);
   };
@@ -231,11 +250,51 @@ const ContentScheduler = () => {
         </Alert>
       )}
       
+      {/* View mode tabs */}
+      <Tabs
+        value={viewMode}
+        onChange={handleViewModeChange}
+        indicatorColor="primary"
+        textColor="primary"
+        sx={{ mb: 2 }}
+      >
+        <Tab 
+          value="calendar" 
+          label="Calendar View" 
+          icon={<CalendarTodayIcon />} 
+          iconPosition="start"
+        />
+        <Tab 
+          value="list" 
+          label="List View" 
+          icon={<ViewListIcon />} 
+          iconPosition="start"
+        />
+      </Tabs>
+      
       {/* Loading indicator */}
       {(postsLoading || scheduleLoading) ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
           <CircularProgress />
         </Box>
+      ) : viewMode === 'calendar' ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={8}>
+            <CalendarView 
+              schedules={schedules} 
+              onDateSelect={handleCalendarDateSelect}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ScheduleList 
+              selectedDate={selectedDate}
+              schedules={schedules}
+              posts={posts}
+              onEdit={handleOpenDialog}
+              onDelete={handleDeleteSchedule}
+            />
+          </Grid>
+        </Grid>
       ) : (
         <Grid container spacing={3}>
           <Grid item xs={12}>

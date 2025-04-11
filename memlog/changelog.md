@@ -16,3 +16,14 @@
   - Created custom ThemeProvider component for dynamic theme switching
   - Improved icon visibility in Dark Mode with appropriate contrast colors
   - Added component overrides for consistent UI appearance in both light and dark themes
+- Set up version control:
+  - Initialized Git repository
+  - Created initial commit with all project files
+  - Added .gitignore file with appropriate exclusions
+  - Connected to GitHub repository (https://github.com/KennXion/SocialMediaManager)
+  - Pushed initial commit to GitHub
+- Implemented Calendar View for Content Scheduler:
+  - Added visual calendar with badges showing scheduled posts
+  - Created detailed post list that updates based on selected date
+  - Added tab navigation between calendar view and list view
+  - Organized UI with better layout for scheduling workflow
