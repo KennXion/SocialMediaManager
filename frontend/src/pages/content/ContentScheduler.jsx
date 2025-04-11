@@ -38,8 +38,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import DoneIcon from '@mui/icons-material/Done';
 
 // Import calendar components
-import MonthCalendarGrid from '../../components/calendar/MonthCalendarGrid';
-import DayDetailView from '../../components/calendar/DayDetailView';
+import EventCalendar from '../../components/calendar/EventCalendar';
 
 import { fetchPosts, fetchPost, updatePost } from '../../store/slices/postSlice';
 import { fetchSchedules, createSchedule, updateSchedule, deleteSchedule } from '../../store/slices/scheduleSlice';
@@ -96,6 +95,23 @@ const ContentScheduler = () => {
   // Handle calendar date selection
   const handleCalendarDateSelect = (date) => {
     setSelectedDate(date);
+  };
+  
+  // Handle event click
+  const handleEventClick = (event) => {
+    handleOpenDialog(event.id);
+  };
+  
+  // Handle slot selection
+  const handleSlotSelect = (slotInfo) => {
+    setSelectedDate(slotInfo.start);
+    handleOpenDialog();
+  };
+  
+  // Handle range change
+  const handleRangeChange = (range) => {
+    // Could be used to fetch events for the visible range
+    console.log('Range changed:', range);
   };
   
   // Handle date change for date picker
@@ -280,18 +296,20 @@ const ContentScheduler = () => {
       ) : viewMode === 'calendar' ? (
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <MonthCalendarGrid
-              schedules={schedules} 
-              posts={posts}
-              onDateSelect={handleCalendarDateSelect}
-              onAddClick={() => handleOpenDialog()}
-            />
-            <DayDetailView 
-              selectedDate={selectedDate}
-              schedules={schedules}
-              posts={posts}
-              onEdit={handleOpenDialog}
-              onDelete={handleDeleteSchedule}
+            <EventCalendar
+              events={schedules.map(schedule => {
+                // Find the associated post
+                const post = posts.find(p => p.id === schedule.postId) || {};
+                
+                return {
+                  ...schedule,
+                  title: post.title || 'Untitled Post',
+                  platform: post.platform || 'default'
+                };
+              })}
+              onEventClick={handleEventClick}
+              onSelectSlot={handleSlotSelect}
+              onRangeChange={handleRangeChange}
             />
           </Grid>
         </Grid>

@@ -1,0 +1,246 @@
+/* React Big Calendar Custom Styles */
+
+/* Calendar Container */
+.rbc-calendar {
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* Calendar Header */
+.rbc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.rbc-toolbar button {
+  color: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: transparent;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #2196f3;
+  color: white;
+  border-color: #2196f3;
+}
+
+/* Month View */
+.rbc-month-view {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rbc-month-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.rbc-header {
+  padding: 10px 3px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 500;
+}
+
+.rbc-header + .rbc-header {
+  border-left: 1px solid #e0e0e0;
+}
+
+/* Day Cells */
+.rbc-day-bg {
+  background-color: white;
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid #e0e0e0;
+}
+
+.rbc-off-range-bg {
+  background-color: #f5f5f5;
+}
+
+.rbc-today {
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+/* Month Day */
+.rbc-month-row + .rbc-month-row {
+  border-top: 1px solid #e0e0e0;
+}
+
+.rbc-date-cell {
+  padding: 5px;
+  text-align: right;
+}
+
+.rbc-date-cell.rbc-now {
+  font-weight: bold;
+  color: #2196f3;
+}
+
+/* Events */
+.rbc-event {
+  background-color: #2196f3;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+}
+
+.rbc-event-label {
+  font-size: 80%;
+}
+
+.rbc-event-overlaps {
+  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.rbc-event-continues-after {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rbc-event-continues-prior {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Event Row */
+.rbc-row-content {
+  position: relative;
+  user-select: none;
+  z-index: 4;
+}
+
+.rbc-row-content-scrollable {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.rbc-row-content-scrollable .rbc-row-content-scroll-container {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* All Day Events */
+.rbc-allday-cell {
+  width: 100%;
+  position: relative;
+}
+
+.rbc-allday-cell + .rbc-allday-cell {
+  border-left: 1px solid #e0e0e0;
+}
+
+.rbc-all-day-event {
+  margin-bottom: 1px;
+}
+
+/* Time Grid View */
+.rbc-time-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  min-height: 0;
+}
+
+.rbc-time-header {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+
+.rbc-time-content {
+  display: flex;
+  flex: 1 0 0%;
+  align-items: flex-start;
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Time Slots */
+.rbc-timeslot-group {
+  border-bottom: 1px solid #e0e0e0;
+  min-height: 40px;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.rbc-time-slot {
+  flex: 1 0 0;
+}
+
+/* Agenda View */
+.rbc-agenda-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  overflow: auto;
+}
+
+.rbc-agenda-view table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.rbc-agenda-view table tbody > tr > td {
+  padding: 5px 10px;
+  vertical-align: top;
+}
+
+.rbc-agenda-time-cell {
+  text-transform: lowercase;
+}
+
+/* Popup */
+.rbc-overlay {
+  position: absolute;
+  z-index: 999;
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  padding: 8px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.rbc-overlay-header {
+  border-bottom: 1px solid #e0e0e0;
+  margin: -8px -8px 8px;
+  padding: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .rbc-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .rbc-toolbar-label {
+    margin: 10px 0;
+  }
+  
+  .rbc-btn-group {
+    margin-bottom: 10px;
+  }
+}
