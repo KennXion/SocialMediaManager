@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Generator - Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        /* Light/Dark mode base styles */
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --border-color: #dddddd;
+            --hover-color: #e3f2fd;
+            --active-color: #bbdefb;
+            --shadow-color: rgba(0,0,0,0.1);
+            --table-border: #eeeeee;
+        }
+        
+        .dark-mode {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --primary-color: #2196f3;
+            --primary-dark: #0d47a1;
+            --border-color: #333333;
+            --hover-color: #1a2733;
+            --active-color: #0d3a63;
+            --shadow-color: rgba(0,0,0,0.3);
+            --table-border: #333333;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .app-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .app-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-toggle {
+            cursor: pointer;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            box-shadow: 2px 0 4px var(--shadow-color);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: var(--hover-color);
+        }
+        .menu-item.active {
+            background-color: var(--active-color);
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        .btn-secondary {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background-color: var(--hover-color);
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .platform-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .platform-chip {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border-radius: 50px;
+            background-color: var(--hover-color);
+            border: 1px solid var(--active-color);
+            cursor: pointer;
+        }
+        .platform-chip.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+        .platform-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .template-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .template-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: var(--card-bg);
+        }
+        .template-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        }
+        .template-card.selected {
+            border-color: var(--primary-color);
+            background-color: var(--hover-color);
+        }
+        .template-title {
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        .template-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .tab-container {
+            margin-bottom: 1.5rem;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .ai-result {
+            margin-top: 2rem;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .result-content {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            margin-bottom: 1rem;
+        }
+        .result-variant {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        .result-variant:hover {
+            border-color: var(--primary-color);
+            background-color: var(--hover-color);
+        }
+        .help-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        .chip {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div class="app-bar-right">
+            <span class="material-icons theme-toggle" id="theme-toggle">dark_mode</span>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item" onclick="window.location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='scheduler.html';">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item active" onclick="window.location.href='ai-generator.html';">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='platforms.html';">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='settings.html';">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <h2>AI Content Generator</h2>
+            
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="create">Create Content</div>
+                    <div class="tab" data-tab="history">Generation History</div>
+                    <div class="tab" data-tab="settings">AI Settings</div>
+                </div>
+                
+                <div class="tab-content active" id="create-tab">
+                    <div class="card">
+                        <form id="generate-form">
+                            <div class="form-group">
+                                <label class="form-label">Content Topic/Campaign</label>
+                                <input type="text" class="form-input" placeholder="What would you like to create content about?" id="content-topic">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Target Platforms</label>
+                                <div class="platform-selection">
+                                    <div class="platform-chip" data-platform="twitter">
+                                        <span class="material-icons platform-icon">tag</span>
+                                        Twitter
+                                    </div>
+                                    <div class="platform-chip selected" data-platform="instagram">
+                                        <span class="material-icons platform-icon">photo_camera</span>
+                                        Instagram
+                                    </div>
+                                    <div class="platform-chip" data-platform="facebook">
+                                        <span class="material-icons platform-icon">thumb_up</span>
+                                        Facebook
+                                    </div>
+                                    <div class="platform-chip selected" data-platform="linkedin">
+                                        <span class="material-icons platform-icon">business</span>
+                                        LinkedIn
+                                    </div>
+                                    <div class="platform-chip" data-platform="tiktok">
+                                        <span class="material-icons platform-icon">music_note</span>
+                                        TikTok
+                                    </div>
+                                    <div class="platform-chip" data-platform="youtube">
+                                        <span class="material-icons platform-icon">play_arrow</span>
+                                        YouTube
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Content Type</label>
+                                <div class="template-cards">
+                                    <div class="template-card selected" data-template="general">
+                                        <h4 class="template-title">General Post</h4>
+                                        <p class="template-description">Standard social media post with engaging content</p>
+                                    </div>
+                                    <div class="template-card" data-template="announcement">
+                                        <h4 class="template-title">Announcement</h4>
+                                        <p class="template-description">Announce news, events, or product launches</p>
+                                    </div>
+                                    <div class="template-card" data-template="promotion">
+                                        <h4 class="template-title">Promotion</h4>
+                                        <p class="template-description">Promote products, services, or special offers</p>
+                                    </div>
+                                    <div class="template-card" data-template="tips">
+                                        <h4 class="template-title">Tips & Advice</h4>
+                                        <p class="template-description">Share helpful tips related to your industry</p>
+                                    </div>
+                                    <div class="template-card" data-template="question">
+                                        <h4 class="template-title">Question/Poll</h4>
+                                        <p class="template-description">Engage your audience with questions</p>
+                                    </div>
+                                    <div class="template-card" data-template="story">
+                                        <h4 class="template-title">Story</h4>
+                                        <p class="template-description">Tell a compelling story about your brand</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Tone of Voice</label>
+                                <select class="form-select" id="tone">
+                                    <option value="professional">Professional</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="friendly">Friendly</option>
+                                    <option value="humorous">Humorous</option>
+                                    <option value="inspiring">Inspiring</option>
+                                    <option value="educational">Educational</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Additional Context/Details</label>
+                                <textarea class="form-textarea" placeholder="Add any specific details, keywords, or context for the AI to consider" id="context"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn">Generate Content</button>
+                        </form>
+                    </div>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Generating creative content...</p>
+                    </div>
+                    
+                    <div class="ai-result" id="ai-result" style="display: none;">
+                        <div class="result-header">
+                            <h3>Generated Content</h3>
+                            <div class="result-actions">
+                                <button class="btn btn-secondary" id="regenerate-btn">Regenerate</button>
+                                <button class="btn" id="use-content-btn">Use Content</button>
+                            </div>
+                        </div>
+                        
+                        <div class="result-content" id="primary-result">
+                            <!-- AI-generated content will appear here -->
+                        </div>
+                        
+                        <h4>Alternative Versions</h4>
+                        <div id="variants-container">
+                            <!-- Alternative versions will appear here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="history-tab">
+                    <div class="card">
+                        <h3>Recent Generations</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Topic</th>
+                                    <th>Platforms</th>
+                                    <th>Template</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Apr 10, 2025</td>
+                                    <td>Product Launch</td>
+                                    <td>Instagram, LinkedIn</td>
+                                    <td>Announcement</td>
+                                    <td>
+                                        <span class="material-icons" style="cursor: pointer; color: var(--primary-color);">visibility</span>
+                                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Apr 9, 2025</td>
+                                    <td>Industry Tips</td>
+                                    <td>Twitter, LinkedIn</td>
+                                    <td>Tips & Advice</td>
+                                    <td>
+                                        <span class="material-icons" style="cursor: pointer; color: var(--primary-color);">visibility</span>
+                                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Apr 8, 2025</td>
+                                    <td>Customer Satisfaction</td>
+                                    <td>Facebook, Instagram</td>
+                                    <td>Story</td>
+                                    <td>
+                                        <span class="material-icons" style="cursor: pointer; color: var(--primary-color);">visibility</span>
+                                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="settings-tab">
+                    <div class="card">
+                        <h3>AI Settings</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">AI Provider</label>
+                            <select class="form-select">
+                                <option>OpenAI (GPT-4)</option>
+                                <option>Anthropic Claude</option>
+                                <option>Custom API</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">API Key</label>
+                            <input type="password" class="form-input" placeholder="Enter your API key">
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Your API key is stored securely and never shared with third parties.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Default Tone of Voice</label>
+                            <select class="form-select">
+                                <option>Professional</option>
+                                <option>Casual</option>
+                                <option>Friendly</option>
+                                <option>Humorous</option>
+                                <option>Inspiring</option>
+                                <option>Educational</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Default Number of Variants</label>
+                            <select class="form-select">
+                                <option>1</option>
+                                <option>2</option>
+                                <option selected>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Brand Voice Guidelines</label>
+                            <textarea class="form-textarea" placeholder="Add your brand voice guidelines to help the AI generate content that matches your brand identity"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Restricted Words/Topics</label>
+                            <textarea class="form-textarea" placeholder="Add words or topics that should not appear in generated content"></textarea>
+                        </div>
+                        
+                        <button class="btn">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            const savedTheme = localStorage.getItem('theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            // Apply saved theme
+            if (savedTheme === 'dark') {
+                htmlElement.classList.add('dark-mode');
+                themeToggle.textContent = 'light_mode';
+            } else {
+                htmlElement.classList.remove('dark-mode');
+                themeToggle.textContent = 'dark_mode';
+            }
+            
+            // Toggle theme on click
+            themeToggle.addEventListener('click', function() {
+                if (htmlElement.classList.contains('dark-mode')) {
+                    htmlElement.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = 'dark_mode';
+                } else {
+                    htmlElement.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = 'light_mode';
+                }
+            });
+        });
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Platform selection
+        document.querySelectorAll('.platform-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                this.classList.toggle('selected');
+            });
+        });
+        
+        // Template selection
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all templates
+                document.querySelectorAll('.template-card').forEach(t => t.classList.remove('selected'));
+                
+                // Add selected class to clicked template
+                this.classList.add('selected');
+            });
+        });
+        
+        // Form submission
+        document.getElementById('generate-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get selected platforms
+            const platforms = [];
+            document.querySelectorAll('.platform-chip.selected').forEach(chip => {
+                platforms.push(chip.getAttribute('data-platform'));
+            });
+            
+            // Get selected template
+            const template = document.querySelector('.template-card.selected').getAttribute('data-template');
+            
+            // Get form values
+            const topic = document.getElementById('content-topic').value;
+            const tone = document.getElementById('tone').value;
+            const context = document.getElementById('context').value;
+            
+            // Validate form
+            if (!topic) {
+                alert('Please enter a content topic');
+                return;
+            }
+            
+            if (platforms.length === 0) {
+                alert('Please select at least one platform');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('ai-result').style.display = 'none';
+            
+            // Call the API
+            fetch('http://localhost:8000/api/ai/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    topic: topic,
+                    platforms: platforms,
+                    template: template,
+                    tone: tone,
+                    context: context
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Display generated content
+                const primaryResult = document.getElementById('primary-result');
+                primaryResult.innerHTML = data.primaryContent.replace(/\n/g, '<br>');
+                
+                // Display variants
+                const variantsContainer = document.getElementById('variants-container');
+                variantsContainer.innerHTML = '';
+                
+                if (data.variants && data.variants.length > 0) {
+                    data.variants.forEach((variant, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'result-variant';
+                        div.innerHTML = variant.replace(/\n/g, '<br>');
+                        div.onclick = function() {
+                            primaryResult.innerHTML = variant.replace(/\n/g, '<br>');
+                        };
+                        variantsContainer.appendChild(div);
+                    });
+                }
+                
+                // Show results
+                document.getElementById('ai-result').style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById('ai-result').scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                console.error('Error generating content:', error);
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Fallback to mock generation
+                alert('Error connecting to AI service. Using mock generation instead.');
+                generateContentMock(topic, platforms, template, tone, context);
+            });
+        });
+        
+        // Generate mock content function (fallback)
+        function generateContentMock(topic, platforms, template, tone, context) {
+            // Create main content
+            let content = '';
+            
+            // Generate different content based on template and platforms
+            if (platforms.includes('instagram') && template === 'general') {
+                content = `✨ Looking to take your ${topic} game to the next level? Our team has been hard at work crafting solutions that help you achieve more with less effort.\n\n💡 Did you know that optimizing your ${topic} strategy can increase your productivity by up to 30%?\n\n👉 Drop a comment below with your favorite ${topic} hack!\n\n#${topic.replace(/\s+/g, '')} #Innovation #ProductivityTips`;
+            } else if (platforms.includes('linkedin') && (template === 'general' || template === 'tips')) {
+                content = `I'm excited to share some insights about ${topic} that have transformed how our team approaches challenges.\n\nThree key takeaways from our recent experience:\n\n1. Start with clear objectives before diving into solutions\n2. Regularly gather feedback from all stakeholders\n3. Iterate based on real-world performance data\n\nWhat strategies have worked for you when dealing with ${topic}? I'd love to hear your perspectives in the comments.`;
+            } else if (template === 'announcement') {
+                content = `🎉 BIG ANNOUNCEMENT 🎉\n\nWe're thrilled to unveil our latest innovation in ${topic}! After months of development and testing, we're finally ready to share it with the world.\n\nThis game-changing solution will help you:\n• Save valuable time\n• Increase efficiency\n• Achieve better results\n\nStay tuned for the official launch next week! Who's excited?`;
+            } else if (template === 'question') {
+                content = `We're curious: What's your biggest challenge when it comes to ${topic}?\n\nA) Finding the right tools\nB) Developing an effective strategy\nC) Staying consistent\nD) Measuring results\n\nShare your answer in the comments - we're collecting insights for our upcoming guide!`;
+            } else {
+                content = `Looking to improve your approach to ${topic}? You're not alone!\n\nWe've been researching the most effective strategies in the industry, and we're excited to share what we've learned.\n\nCheck out our latest blog post (link in bio) for a comprehensive guide that will help you navigate the complexities of ${topic} with confidence.\n\nWhat aspect of ${topic} do you find most challenging?`;
+            }
+            
+            // Display generated content
+            document.getElementById('primary-result').innerHTML = content.replace(/\n/g, '<br>');
+            
+            // Generate variants
+            const variants = [
+                `Have you been struggling with ${topic} lately? We get it - it's a complex challenge that many of our clients face.\n\nOur team has developed a streamlined approach that makes ${topic} management easier than ever. The results speak for themselves: improved efficiency, better outcomes, and happier teams.\n\nReady to transform how you handle ${topic}? Let's connect!`,
+                `${topic.charAt(0).toUpperCase() + topic.slice(1)} doesn't have to be complicated! 💡\n\nWe've broken down the process into three simple steps that anyone can follow:\n\n1️⃣ Analyze your current approach\n2️⃣ Identify opportunities for improvement\n3️⃣ Implement targeted solutions\n\nWant to learn more? Check out our latest resource (link in profile)!`,
+                `"The biggest challenge with ${topic} is knowing where to start."\n\nWe hear this from clients all the time. That's why we've created a beginner-friendly guide that walks you through everything you need to know.\n\nFrom fundamental concepts to advanced strategies, we've got you covered. No more confusion, no more overwhelm - just clear, actionable advice.`
+            ];
+            
+            // Display variants
+            const variantsContainer = document.getElementById('variants-container');
+            variantsContainer.innerHTML = '';
+            
+            variants.forEach((variant, index) => {
+                const div = document.createElement('div');
+                div.className = 'result-variant';
+                div.innerHTML = variant.replace(/\n/g, '<br>');
+                div.onclick = function() {
+                    document.getElementById('primary-result').innerHTML = variant.replace(/\n/g, '<br>');
+                };
+                variantsContainer.appendChild(div);
+            });
+            
+            // Show results
+            document.getElementById('ai-result').style.display = 'block';
+        }
+        
+        // Regenerate button
+        document.getElementById('regenerate-btn').addEventListener('click', function() {
+            // Call submit event on the form to regenerate content
+            document.getElementById('generate-form').dispatchEvent(new Event('submit'));
+        });
+        
+        // Use content button
+        document.getElementById('use-content-btn').addEventListener('click', function() {
+            const content = document.getElementById('primary-result').innerHTML.replace(/<br>/g, '\n');
+            const topic = document.getElementById('content-topic').value;
+            
+            // Save to localStorage to pass to content page
+            localStorage.setItem('draft_content', content);
+            localStorage.setItem('draft_title', topic);
+            
+            alert('Content added to your drafts! You can now edit and schedule it from the Content page.');
+            
+            // Redirect to content page
+            window.location.href = 'content.html';
+        });
+    </script>
+</body>
+</html>

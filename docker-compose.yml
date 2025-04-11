@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: dbadmin
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: social_media_manager_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6
+    restart: always
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    restart: always
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: postgresql+psycopg://dbadmin:devpassword@db:5432/social_media_manager_db
+      REDIS_HOST: redis
+      SECRET_KEY: development_secret_key
+      DEBUG: "true"
+      API_PREFIX: /api
+      CORS_ORIGINS: http://localhost:3000
+      OPENAI_API_KEY: ""
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      REACT_APP_API_URL: http://localhost:8000/api
+
+volumes:
+  pgdata:

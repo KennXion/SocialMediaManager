@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Creation - Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        /* Light/Dark mode base styles */
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --border-color: #dddddd;
+            --hover-color: #e3f2fd;
+            --active-color: #bbdefb;
+            --shadow-color: rgba(0,0,0,0.1);
+            --ai-bg: #f0f8ff;
+            --ai-border: #2196f3;
+            --success-bg: #e8f5e9;
+            --success-border: #4caf50;
+        }
+        
+        .dark-mode {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --primary-color: #2196f3;
+            --primary-dark: #0d47a1;
+            --border-color: #333333;
+            --hover-color: #1a2733;
+            --active-color: #0d3a63;
+            --shadow-color: rgba(0,0,0,0.3);
+            --ai-bg: #0d2840;
+            --ai-border: #0d47a1;
+            --success-bg: #0f3b29;
+            --success-border: #1b5e20;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .app-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .app-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-toggle {
+            cursor: pointer;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            box-shadow: 2px 0 4px var(--shadow-color);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: var(--hover-color);
+        }
+        .menu-item.active {
+            background-color: var(--active-color);
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .platform-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .platform-chip {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border-radius: 50px;
+            background-color: var(--hover-color);
+            border: 1px solid var(--active-color);
+            cursor: pointer;
+        }
+        .platform-chip.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+        .platform-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        .btn-secondary {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background-color: var(--hover-color);
+        }
+        .ai-generator {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--ai-bg);
+            border-radius: 8px;
+            border: 1px dashed var(--ai-border);
+        }
+        .ai-prompt {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        .ai-suggestions {
+            margin-top: 1rem;
+        }
+        .ai-suggestion {
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 1px 2px var(--shadow-color);
+            cursor: pointer;
+        }
+        .ai-suggestion:hover {
+            background-color: var(--hover-color);
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .spinner {
+            border: 4px solid var(--border-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-message {
+            padding: 1rem;
+            background-color: var(--success-bg);
+            border-radius: 4px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--success-border);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div class="app-bar-right">
+            <span class="material-icons theme-toggle" id="theme-toggle">dark_mode</span>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item" onclick="window.location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item active" onclick="window.location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='scheduler.html';">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='ai-generator.html';">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='platforms.html';">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='settings.html';">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <h2>Create New Content</h2>
+            
+            <div class="card">
+                <form id="content-form">
+                    <div class="form-group">
+                        <label class="form-label">Title/Campaign Name</label>
+                        <input type="text" class="form-input" id="post-title" placeholder="Enter a title for internal reference">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Select Platforms</label>
+                        <div class="platform-selection" id="platform-selection">
+                            <!-- Platforms will be loaded dynamically -->
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Content</label>
+                        <textarea class="form-textarea" id="post-content" placeholder="Write your post content here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Media</label>
+                        <input type="file" multiple class="form-input" id="media-upload">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tags/Hashtags</label>
+                        <input type="text" class="form-input" id="post-tags" placeholder="Enter tags separated by commas">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Scheduling</label>
+                        <select class="form-select" id="schedule-type">
+                            <option value="now">Post Now</option>
+                            <option value="later">Schedule for Later</option>
+                            <option value="queue">Add to Queue</option>
+                        </select>
+                    </div>
+                    
+                    <div id="schedule-datetime" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Schedule Date</label>
+                            <input type="date" class="form-input" id="schedule-date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Schedule Time</label>
+                            <input type="time" class="form-input" id="schedule-time">
+                        </div>
+                    </div>
+                    
+                    <div class="ai-generator">
+                        <h3>AI Content Generator</h3>
+                        <p>Enter a prompt to generate content ideas optimized for your selected platforms.</p>
+                        <input type="text" class="ai-prompt" id="ai-prompt" placeholder="What would you like to post about?">
+                        <button type="button" class="btn btn-primary" id="generate-btn">Generate Content</button>
+                        
+                        <div id="ai-loading" class="loading" style="display: none;">
+                            <div class="spinner"></div>
+                            <span style="margin-left: 1rem;">Generating content...</span>
+                        </div>
+                        
+                        <div class="ai-suggestions" id="ai-suggestions">
+                            <!-- AI suggestions will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="success-message" id="success-message">
+                        Post created successfully! You can view it on the dashboard.
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="submit" class="btn btn-primary">Create Post</button>
+                        <button type="button" class="btn btn-secondary" id="save-draft-btn">Save as Draft</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            const savedTheme = localStorage.getItem('theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            // Apply saved theme
+            if (savedTheme === 'dark') {
+                htmlElement.classList.add('dark-mode');
+                themeToggle.textContent = 'light_mode';
+            } else {
+                htmlElement.classList.remove('dark-mode');
+                themeToggle.textContent = 'dark_mode';
+            }
+            
+            // Toggle theme on click
+            themeToggle.addEventListener('click', function() {
+                if (htmlElement.classList.contains('dark-mode')) {
+                    htmlElement.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = 'dark_mode';
+                } else {
+                    htmlElement.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = 'light_mode';
+                }
+            });
+        });
+    
+        // API URL
+        const API_URL = 'http://localhost:8000/api';
+        
+        // When the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load platforms
+            loadPlatforms();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        // Load platforms from API or localStorage
+        function loadPlatforms() {
+            const platformsContainer = document.getElementById('platform-selection');
+            
+            // Try to get platforms from localStorage first
+            const storedPlatforms = localStorage.getItem('platforms');
+            
+            if (storedPlatforms) {
+                renderPlatforms(JSON.parse(storedPlatforms));
+            } else {
+                // Fetch from API if not in localStorage
+                fetch(`${API_URL}/platforms`)
+                    .then(response => response.json())
+                    .then(platforms => {
+                        renderPlatforms(platforms);
+                        // Store for future use
+                        localStorage.setItem('platforms', JSON.stringify(platforms));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching platforms:', error);
+                        platformsContainer.innerHTML = `
+                            <p>Error loading platforms. Please refresh the page to try again.</p>
+                        `;
+                    });
+            }
+        }
+        
+        // Render platforms as chips
+        function renderPlatforms(platforms) {
+            const platformsContainer = document.getElementById('platform-selection');
+            
+            const platformChips = platforms.map(platform => {
+                let iconName = 'public';
+                
+                // Set appropriate icon for each platform
+                switch(platform.id) {
+                    case 'twitter':
+                        iconName = 'tag';
+                        break;
+                    case 'instagram':
+                        iconName = 'camera_alt';
+                        break;
+                    case 'facebook':
+                        iconName = 'thumb_up';
+                        break;
+                    case 'linkedin':
+                        iconName = 'business';
+                        break;
+                    case 'tiktok':
+                        iconName = 'music_note';
+                        break;
+                    case 'youtube':
+                        iconName = 'play_arrow';
+                        break;
+                }
+                
+                const disabledClass = platform.status === 'disconnected' ? 'disabled' : '';
+                
+                return `
+                    <div class="platform-chip ${disabledClass}" data-platform="${platform.id}">
+                        <span class="material-icons platform-icon">${iconName}</span>
+                        ${platform.name}
+                    </div>
+                `;
+            }).join('');
+            
+            platformsContainer.innerHTML = platformChips;
+            
+            // Add click event listeners to chips
+            document.querySelectorAll('.platform-chip').forEach(chip => {
+                if (!chip.classList.contains('disabled')) {
+                    chip.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                    });
+                } else {
+                    chip.style.opacity = '0.5';
+                    chip.title = 'Platform not connected. Connect it in Platforms page.';
+                }
+            });
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Form submission
+            document.getElementById('content-form').addEventListener('submit', handleSubmit);
+            
+            // Save draft button
+            document.getElementById('save-draft-btn').addEventListener('click', saveDraft);
+            
+            // AI generate button
+            document.getElementById('generate-btn').addEventListener('click', generateAIContent);
+            
+            // Schedule type change
+            document.getElementById('schedule-type').addEventListener('change', function() {
+                const scheduleDateTime = document.getElementById('schedule-datetime');
+                if (this.value === 'later') {
+                    scheduleDateTime.style.display = 'block';
+                } else {
+                    scheduleDateTime.style.display = 'none';
+                }
+            });
+            
+            // Set default date and time for scheduling
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const dateInput = document.getElementById('schedule-date');
+            dateInput.valueAsDate = tomorrow;
+            
+            const timeInput = document.getElementById('schedule-time');
+            timeInput.value = '09:00';
+        }
+        
+        // Handle form submission
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('post-title').value;
+            const content = document.getElementById('post-content').value;
+            const scheduleType = document.getElementById('schedule-type').value;
+            
+            // Validate form
+            if (!title) {
+                alert('Please enter a title for your post');
+                return;
+            }
+            
+            if (!content) {
+                alert('Please enter content for your post');
+                return;
+            }
+            
+            // Get selected platforms
+            const selectedPlatforms = [];
+            document.querySelectorAll('.platform-chip.selected').forEach(chip => {
+                selectedPlatforms.push(chip.getAttribute('data-platform'));
+            });
+            
+            if (selectedPlatforms.length === 0) {
+                alert('Please select at least one platform');
+                return;
+            }
+            
+            // Prepare post data
+            const postData = {
+                title: title,
+                content: content,
+                platforms: selectedPlatforms,
+                tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()),
+                schedule: scheduleType !== 'now'
+            };
+            
+            // Add scheduled date if applicable
+            if (scheduleType === 'later') {
+                const scheduleDate = document.getElementById('schedule-date').value;
+                const scheduleTime = document.getElementById('schedule-time').value;
+                postData.scheduledFor = new Date(`${scheduleDate}T${scheduleTime}`).toISOString();
+            }
+            
+            // Send to API
+            fetch(`${API_URL}/posts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Post created:', data);
+                
+                // Show success message
+                const successMessage = document.getElementById('success-message');
+                successMessage.style.display = 'block';
+                
+                // Reset form
+                document.getElementById('content-form').reset();
+                document.querySelectorAll('.platform-chip').forEach(chip => {
+                    chip.classList.remove('selected');
+                });
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Error creating post:', error);
+                alert('There was an error creating your post. Please try again.');
+            });
+        }
+        
+        // Save post as draft
+        function saveDraft() {
+            // Get form values
+            const title = document.getElementById('post-title').value || 'Untitled Draft';
+            const content = document.getElementById('post-content').value || '';
+            
+            // Get selected platforms
+            const selectedPlatforms = [];
+            document.querySelectorAll('.platform-chip.selected').forEach(chip => {
+                selectedPlatforms.push(chip.getAttribute('data-platform'));
+            });
+            
+            // Create draft object
+            const draft = {
+                title: title,
+                content: content,
+                platforms: selectedPlatforms,
+                tags: document.getElementById('post-tags').value,
+                savedAt: new Date().toISOString()
+            };
+            
+            // Get existing drafts from localStorage
+            let drafts = JSON.parse(localStorage.getItem('contentDrafts') || '[]');
+            
+            // Add new draft
+            drafts.unshift(draft);
+            
+            // Save back to localStorage
+            localStorage.setItem('contentDrafts', JSON.stringify(drafts));
+            
+            // Show success message
+            alert('Draft saved successfully!');
+        }
+        
+        // Generate AI content
+        function generateAIContent() {
+            const prompt = document.getElementById('ai-prompt').value;
+            
+            if (!prompt) {
+                alert('Please enter a prompt for the AI generator.');
+                return;
+            }
+            
+            // Get selected platforms
+            const selectedPlatforms = [];
+            document.querySelectorAll('.platform-chip.selected').forEach(chip => {
+                selectedPlatforms.push(chip.getAttribute('data-platform'));
+            });
+            
+            // Show loading spinner
+            document.getElementById('ai-loading').style.display = 'flex';
+            document.getElementById('ai-suggestions').innerHTML = '';
+            document.getElementById('generate-btn').disabled = true;
+            
+            // Call AI API
+            fetch(`${API_URL}/ai/generate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    topic: prompt,
+                    platforms: selectedPlatforms,
+                    template: 'general',
+                    tone: 'professional'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                document.getElementById('ai-loading').style.display = 'none';
+                document.getElementById('generate-btn').disabled = false;
+                
+                // Display AI suggestions
+                const suggestionsContainer = document.getElementById('ai-suggestions');
+                
+                // Primary content suggestion
+                const primarySuggestion = document.createElement('div');
+                primarySuggestion.className = 'ai-suggestion';
+                primarySuggestion.innerHTML = data.primaryContent.replace(/\n/g, '<br>');
+                primarySuggestion.addEventListener('click', function() {
+                    document.getElementById('post-content').value = data.primaryContent;
+                });
+                
+                suggestionsContainer.appendChild(primarySuggestion);
+                
+                // Add variant suggestions
+                if (data.variants && data.variants.length > 0) {
+                    suggestionsContainer.innerHTML += '<h4>Alternative Versions</h4>';
+                    
+                    data.variants.forEach(variant => {
+                        const variantEl = document.createElement('div');
+                        variantEl.className = 'ai-suggestion';
+                        variantEl.innerHTML = variant.replace(/\n/g, '<br>');
+                        variantEl.addEventListener('click', function() {
+                            document.getElementById('post-content').value = variant;
+                        });
+                        
+                        suggestionsContainer.appendChild(variantEl);
+                    });
+                }
+                
+                // Scroll to suggestions
+                suggestionsContainer.scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                console.error('Error generating AI content:', error);
+                document.getElementById('ai-loading').style.display = 'none';
+                document.getElementById('generate-btn').disabled = false;
+                alert('There was an error generating AI content. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .app-bar {
+            background-color: #2196f3;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: #e3f2fd;
+        }
+        .menu-item.active {
+            background-color: #bbdefb;
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: #2196f3;
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .stat-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 500;
+            margin: 0;
+            color: #2196f3;
+        }
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        .positive {
+            color: #4caf50;
+        }
+        .negative {
+            color: #f44336;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            font-weight: 500;
+            color: #666;
+        }
+        .platform-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+        }
+        .twitter {
+            background-color: #1da1f2;
+        }
+        .instagram {
+            background-color: #c13584;
+        }
+        .facebook {
+            background-color: #4267B2;
+        }
+        .linkedin {
+            background-color: #0077b5;
+        }
+        .tiktok {
+            background-color: #000000;
+        }
+        .youtube {
+            background-color: #FF0000;
+        }
+        .tab-container {
+            margin-bottom: 1.5rem;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .tab.active {
+            color: #2196f3;
+            border-bottom: 2px solid #2196f3;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item" onclick="location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item active" onclick="location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <h2>Analytics Dashboard</h2>
+            
+            <div class="filters">
+                <select class="filter-select">
+                    <option>All Platforms</option>
+                    <option>Twitter</option>
+                    <option>Instagram</option>
+                    <option>Facebook</option>
+                    <option>LinkedIn</option>
+                    <option>TikTok</option>
+                    <option>YouTube</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 90 Days</option>
+                    <option>This Year</option>
+                    <option>Custom Range</option>
+                </select>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <h3 class="stat-title">Total Engagement</h3>
+                    <p class="stat-value">24.5k</p>
+                    <p class="stat-change positive">↑ 12.3% from previous period</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">New Followers</h3>
+                    <p class="stat-value">1,253</p>
+                    <p class="stat-change positive">↑ 5.7% from previous period</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Impressions</h3>
+                    <p class="stat-value">89.2k</p>
+                    <p class="stat-change positive">↑ 8.9% from previous period</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Conversion Rate</h3>
+                    <p class="stat-value">3.2%</p>
+                    <p class="stat-change negative">↓ 0.5% from previous period</p>
+                </div>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="engagement">Engagement</div>
+                    <div class="tab" data-tab="followers">Followers</div>
+                    <div class="tab" data-tab="content">Content Performance</div>
+                    <div class="tab" data-tab="demographics">Demographics</div>
+                </div>
+                
+                <div class="tab-content active" id="engagement-tab">
+                    <div class="card">
+                        <h3 class="card-title">Engagement Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">Engagement by Platform</h3>
+                        <div class="chart-container">
+                            <canvas id="platformEngagementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="followers-tab">
+                    <div class="card">
+                        <h3 class="card-title">Follower Growth Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="followerGrowthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="content-tab">
+                    <div class="card">
+                        <h3 class="card-title">Top Performing Content</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Platform</th>
+                                        <th>Content</th>
+                                        <th>Published</th>
+                                        <th>Engagement</th>
+                                        <th>Reach</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="platform-tag instagram">Instagram</span></td>
+                                        <td>Product showcase with customer testimonial</td>
+                                        <td>Apr 5, 2025</td>
+                                        <td>2,345 likes, 423 comments</td>
+                                        <td>15,234</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="platform-tag twitter">Twitter</span></td>
+                                        <td>Industry news commentary</td>
+                                        <td>Apr 8, 2025</td>
+                                        <td>1,892 likes, 348 retweets</td>
+                                        <td>28,567</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="platform-tag linkedin">LinkedIn</span></td>
+                                        <td>Company milestone announcement</td>
+                                        <td>Apr 2, 2025</td>
+                                        <td>1,456 reactions, 87 comments</td>
+                                        <td>8,932</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="platform-tag tiktok">TikTok</span></td>
+                                        <td>Behind-the-scenes product creation</td>
+                                        <td>Apr 7, 2025</td>
+                                        <td>54.3k views, 4.2k likes</td>
+                                        <td>87,456</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="platform-tag facebook">Facebook</span></td>
+                                        <td>Customer success story</td>
+                                        <td>Apr 3, 2025</td>
+                                        <td>876 reactions, 68 comments</td>
+                                        <td>12,345</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="demographics-tab">
+                    <div class="card">
+                        <h3 class="card-title">Audience Demographics</h3>
+                        <div class="chart-container">
+                            <canvas id="demographicsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Charts initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Engagement Over Time Chart
+            const engagementCtx = document.getElementById('engagementChart').getContext('2d');
+            const engagementChart = new Chart(engagementCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Apr 4', 'Apr 5', 'Apr 6', 'Apr 7', 'Apr 8', 'Apr 9', 'Apr 10'],
+                    datasets: [{
+                        label: 'Likes',
+                        data: [1242, 1536, 1798, 1654, 2103, 1892, 2156],
+                        borderColor: '#2196f3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Comments',
+                        data: [342, 456, 523, 489, 567, 498, 543],
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Shares',
+                        data: [156, 234, 287, 267, 324, 298, 312],
+                        borderColor: '#ff9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Platform Engagement Chart
+            const platformCtx = document.getElementById('platformEngagementChart').getContext('2d');
+            const platformChart = new Chart(platformCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Twitter', 'Instagram', 'Facebook', 'LinkedIn', 'TikTok', 'YouTube'],
+                    datasets: [{
+                        label: 'Total Engagement',
+                        data: [4526, 7892, 3456, 2987, 8965, 3245],
+                        backgroundColor: [
+                            '#1da1f2', // Twitter
+                            '#c13584', // Instagram
+                            '#4267B2', // Facebook
+                            '#0077b5', // LinkedIn
+                            '#000000', // TikTok
+                            '#FF0000'  // YouTube
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Follower Growth Chart
+            const followerCtx = document.getElementById('followerGrowthChart').getContext('2d');
+            const followerChart = new Chart(followerCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                    datasets: [{
+                        label: 'Twitter',
+                        data: [15200, 15800, 16500, 17200],
+                        borderColor: '#1da1f2',
+                        tension: 0.3
+                    }, {
+                        label: 'Instagram',
+                        data: [23400, 24800, 26500, 28300],
+                        borderColor: '#c13584',
+                        tension: 0.3
+                    }, {
+                        label: 'Facebook',
+                        data: [32100, 33200, 34500, 35600],
+                        borderColor: '#4267B2',
+                        tension: 0.3
+                    }, {
+                        label: 'LinkedIn',
+                        data: [12300, 12800, 13400, 14100],
+                        borderColor: '#0077b5',
+                        tension: 0.3
+                    }, {
+                        label: 'TikTok',
+                        data: [8500, 12300, 18700, 25400],
+                        borderColor: '#000000',
+                        tension: 0.3
+                    }, {
+                        label: 'YouTube',
+                        data: [4300, 4700, 5200, 5800],
+                        borderColor: '#FF0000',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Demographics Chart
+            const demoCtx = document.getElementById('demographicsChart').getContext('2d');
+            const demoChart = new Chart(demoCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
+                    datasets: [{
+                        data: [15, 32, 25, 18, 10],
+                        backgroundColor: [
+                            '#42a5f5', // Light Blue
+                            '#2196f3', // Blue
+                            '#1976d2', // Medium Blue
+                            '#0d47a1', // Dark Blue
+                            '#bbdefb'  // Very Light Blue
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

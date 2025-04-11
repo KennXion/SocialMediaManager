@@ -1,0 +1,15 @@
+# Inventory file for Social Media Manager application
+# Replace the IPs with your actual server IPs
+
+[app_servers]
+# Example: app-server-1 ansible_host=10.0.0.1
+# For local testing with Docker, you can use localhost
+localhost ansible_connection=local
+
+[database_servers]
+# Example: db-server-1 ansible_host=10.0.0.2
+# For local testing with Docker, you can use localhost
+localhost ansible_connection=local
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

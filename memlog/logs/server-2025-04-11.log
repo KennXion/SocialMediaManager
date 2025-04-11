@@ -1,0 +1,86 @@
+[2025-04-11T04:24:53.443Z] [INFO] Server running on http://localhost:8000
+[2025-04-11T04:24:53.443Z] [INFO] Environment: development
+[2025-04-11T04:25:00.379Z] [INFO] SIGTERM received, shutting down gracefully
+[2025-04-11T04:25:00.380Z] [INFO] Server closed
+[2025-04-11T04:29:43.172Z] [INFO] Server running on http://localhost:9500
+[2025-04-11T04:29:43.173Z] [INFO] Environment: development
+[2025-04-11T04:30:43.378Z] [INFO] SIGTERM received, shutting down gracefully
+[2025-04-11T04:30:43.379Z] [INFO] Server closed
+[2025-04-11T04:33:52.202Z] [INFO] Server running on http://localhost:9500
+[2025-04-11T04:33:52.202Z] [INFO] Environment: development
+[2025-04-11T04:34:06.153Z] [REQUEST] GET /logo192.png 200 - 8ms
+[2025-04-11T04:59:20.929Z] [INFO] SIGINT received, shutting down gracefully
+[2025-04-11T04:59:20.935Z] [INFO] Server closed
+[2025-04-11T05:01:00.674Z] [INFO] Server running on http://localhost:9500
+[2025-04-11T05:01:00.674Z] [INFO] Environment: development
+[2025-04-11T05:01:07.881Z] [REQUEST] GET /logo192.png 304 - 6ms
+[2025-04-11T05:02:00.181Z] [REQUEST] GET /logo192.png 304 - 2ms
+[2025-04-11T05:03:00.851Z] [REQUEST] GET /logo192.png 304 - 1ms
+[2025-04-11T05:03:03.599Z] [REQUEST] GET /api/posts 200 - 5ms
+[2025-04-11T05:03:03.602Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:03:06.404Z] [REQUEST] GET /api/schedules 200 - 6ms
+[2025-04-11T05:03:06.409Z] [REQUEST] GET /api/schedules 304 - 3ms
+[2025-04-11T05:03:06.411Z] [REQUEST] GET /api/posts 304 - 2ms
+[2025-04-11T05:03:06.412Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:04:37.884Z] [REQUEST] GET /api/schedules 304 - 15ms
+[2025-04-11T05:04:37.887Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:04:37.889Z] [REQUEST] GET /api/schedules 304 - 2ms
+[2025-04-11T05:04:37.890Z] [REQUEST] GET /api/posts 304 - 2ms
+[2025-04-11T05:04:37.975Z] [REQUEST] GET /logo192.png 304 - 1ms
+[2025-04-11T05:05:36.172Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:05:36.176Z] [REQUEST] GET /api/schedules 304 - 2ms
+[2025-04-11T05:05:36.178Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:05:36.179Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:05:36.294Z] [REQUEST] GET /logo192.png 304 - 1ms
+[2025-04-11T05:05:37.110Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:05:37.112Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:05:37.114Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:05:37.115Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:05:37.205Z] [REQUEST] GET /logo192.png 304 - 1ms
+[2025-04-11T05:05:53.304Z] [INFO] SIGINT received, shutting down gracefully
+[2025-04-11T05:05:53.306Z] [INFO] Server closed
+[2025-04-11T05:05:56.804Z] [INFO] Server running on http://localhost:9500
+[2025-04-11T05:05:56.804Z] [INFO] Environment: development
+[2025-04-11T05:06:02.504Z] [REQUEST] GET /api/schedules 304 - 4ms
+[2025-04-11T05:06:02.507Z] [REQUEST] GET /api/posts 200 - 1ms
+[2025-04-11T05:06:02.508Z] [REQUEST] GET /api/schedules 304 - 2ms
+[2025-04-11T05:06:02.508Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:06:02.583Z] [REQUEST] GET /logo192.png 304 - 1ms
+[2025-04-11T05:06:19.893Z] [REQUEST] GET /logo192.png 304 - 2ms
+[2025-04-11T05:06:24.705Z] [REQUEST] GET /logo192.png 304 - 1ms
+[2025-04-11T05:06:26.566Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:06:26.568Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:06:28.226Z] [REQUEST] GET /api/platforms 200 - 1ms
+[2025-04-11T05:06:28.228Z] [REQUEST] GET /api/platforms 304 - 1ms
+[2025-04-11T05:06:30.712Z] [REQUEST] GET /api/analytics 200 - 1ms
+[2025-04-11T05:06:30.713Z] [REQUEST] GET /api/platforms 304 - 2ms
+[2025-04-11T05:06:30.715Z] [REQUEST] GET /api/analytics 304 - 1ms
+[2025-04-11T05:06:30.716Z] [REQUEST] GET /api/platforms 304 - 2ms
+[2025-04-11T05:06:36.712Z] [REQUEST] GET /api/preferences 200 - 1ms
+[2025-04-11T05:06:36.714Z] [REQUEST] GET /api/preferences 304 - 1ms
+[2025-04-11T05:06:50.170Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:06:50.172Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:06:52.478Z] [REQUEST] GET /api/platforms 304 - 0ms
+[2025-04-11T05:06:52.480Z] [REQUEST] GET /api/platforms 304 - 0ms
+[2025-04-11T05:06:54.802Z] [REQUEST] GET /api/platforms 304 - 1ms
+[2025-04-11T05:06:54.806Z] [REQUEST] GET /api/platforms 304 - 1ms
+[2025-04-11T05:06:54.808Z] [REQUEST] GET /api/analytics 304 - 1ms
+[2025-04-11T05:06:54.809Z] [REQUEST] GET /api/analytics 304 - 1ms
+[2025-04-11T05:06:59.176Z] [REQUEST] GET /api/preferences 304 - 0ms
+[2025-04-11T05:06:59.178Z] [REQUEST] GET /api/preferences 304 - 1ms
+[2025-04-11T05:07:02.241Z] [REQUEST] GET /api/preferences 304 - 1ms
+[2025-04-11T05:07:02.243Z] [REQUEST] GET /api/preferences 304 - 0ms
+[2025-04-11T05:07:28.198Z] [REQUEST] GET /api/preferences 304 - 1ms
+[2025-04-11T05:07:28.200Z] [REQUEST] GET /api/preferences 304 - 1ms
+[2025-04-11T05:07:34.049Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:07:34.050Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:07:34.051Z] [REQUEST] GET /api/schedules 304 - 2ms
+[2025-04-11T05:07:34.052Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:08:31.557Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:08:31.558Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:08:31.559Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:08:31.560Z] [REQUEST] GET /api/posts 304 - 1ms
+[2025-04-11T05:08:31.567Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:08:31.568Z] [REQUEST] GET /api/schedules 304 - 1ms
+[2025-04-11T05:08:31.568Z] [REQUEST] GET /api/posts 304 - 0ms
+[2025-04-11T05:08:31.569Z] [REQUEST] GET /api/posts 304 - 0ms

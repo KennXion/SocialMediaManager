@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platforms - Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .app-bar {
+            background-color: #2196f3;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: #e3f2fd;
+        }
+        .menu-item.active {
+            background-color: #bbdefb;
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: #2196f3;
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #1976d2;
+        }
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .platform-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .platform-header {
+            padding: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .platform-logo {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .platform-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .platform-body {
+            padding: 1.5rem;
+        }
+        .platform-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .connected {
+            background-color: #4caf50;
+        }
+        .disconnected {
+            background-color: #f44336;
+        }
+        .platform-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin: 0;
+        }
+        .platform-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .twitter {
+            background-color: #1da1f2;
+        }
+        .instagram {
+            background-color: #c13584;
+        }
+        .facebook {
+            background-color: #4267B2;
+        }
+        .linkedin {
+            background-color: #0077b5;
+        }
+        .tiktok {
+            background-color: #000000;
+        }
+        .youtube {
+            background-color: #FF0000;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .connection-steps {
+            margin-top: 1.5rem;
+        }
+        .step {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        .step-number {
+            flex: 0 0 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #2196f3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 1rem;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .platform-help {
+            margin-top: 2rem;
+        }
+        .help-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item" onclick="location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item" onclick="location.href='scheduler.html';">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item" onclick="location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item active" onclick="location.href='platforms.html';">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <div class="toolbar">
+                <h2>Social Media Platforms</h2>
+                <div>
+                    <button class="btn" onclick="openConnectModal()">Connect New Platform</button>
+                </div>
+            </div>
+            
+            <div class="platform-grid">
+                <!-- Twitter -->
+                <div class="platform-card">
+                    <div class="platform-header twitter">
+                        <div class="platform-logo">
+                            <span class="material-icons">tag</span>
+                        </div>
+                        <h3 class="platform-name">Twitter</h3>
+                    </div>
+                    <div class="platform-body">
+                        <div class="platform-status">
+                            <div class="status-indicator connected"></div>
+                            <span>Connected as @YourBrand</span>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="stat-item">
+                                <p class="stat-value">16.8k</p>
+                                <p class="stat-label">Followers</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-value">4.5k</p>
+                                <p class="stat-label">Engagement</p>
+                            </div>
+                        </div>
+                        <div class="platform-actions">
+                            <button class="btn">View Analytics</button>
+                            <button class="btn btn-secondary">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instagram -->
+                <div class="platform-card">
+                    <div class="platform-header instagram">
+                        <div class="platform-logo">
+                            <span class="material-icons">photo_camera</span>
+                        </div>
+                        <h3 class="platform-name">Instagram</h3>
+                    </div>
+                    <div class="platform-body">
+                        <div class="platform-status">
+                            <div class="status-indicator connected"></div>
+                            <span>Connected as @your_brand</span>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="stat-item">
+                                <p class="stat-value">28.3k</p>
+                                <p class="stat-label">Followers</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-value">7.9k</p>
+                                <p class="stat-label">Engagement</p>
+                            </div>
+                        </div>
+                        <div class="platform-actions">
+                            <button class="btn">View Analytics</button>
+                            <button class="btn btn-secondary">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Facebook -->
+                <div class="platform-card">
+                    <div class="platform-header facebook">
+                        <div class="platform-logo">
+                            <span class="material-icons">thumb_up</span>
+                        </div>
+                        <h3 class="platform-name">Facebook</h3>
+                    </div>
+                    <div class="platform-body">
+                        <div class="platform-status">
+                            <div class="status-indicator connected"></div>
+                            <span>Connected as Your Brand Page</span>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="stat-item">
+                                <p class="stat-value">35.6k</p>
+                                <p class="stat-label">Followers</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-value">3.4k</p>
+                                <p class="stat-label">Engagement</p>
+                            </div>
+                        </div>
+                        <div class="platform-actions">
+                            <button class="btn">View Analytics</button>
+                            <button class="btn btn-secondary">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- LinkedIn -->
+                <div class="platform-card">
+                    <div class="platform-header linkedin">
+                        <div class="platform-logo">
+                            <span class="material-icons">business</span>
+                        </div>
+                        <h3 class="platform-name">LinkedIn</h3>
+                    </div>
+                    <div class="platform-body">
+                        <div class="platform-status">
+                            <div class="status-indicator connected"></div>
+                            <span>Connected as Your Brand</span>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="stat-item">
+                                <p class="stat-value">14.1k</p>
+                                <p class="stat-label">Followers</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-value">3.0k</p>
+                                <p class="stat-label">Engagement</p>
+                            </div>
+                        </div>
+                        <div class="platform-actions">
+                            <button class="btn">View Analytics</button>
+                            <button class="btn btn-secondary">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- TikTok -->
+                <div class="platform-card">
+                    <div class="platform-header tiktok">
+                        <div class="platform-logo">
+                            <span class="material-icons">music_note</span>
+                        </div>
+                        <h3 class="platform-name">TikTok</h3>
+                    </div>
+                    <div class="platform-body">
+                        <div class="platform-status">
+                            <div class="status-indicator connected"></div>
+                            <span>Connected as @yourbrand</span>
+                        </div>
+                        <div class="platform-stats">
+                            <div class="stat-item">
+                                <p class="stat-value">25.4k</p>
+                                <p class="stat-label">Followers</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-value">89.7k</p>
+                                <p class="stat-label">Views</p>
+                            </div>
+                        </div>
+                        <div class="platform-actions">
+                            <button class="btn">View Analytics</button>
+                            <button class="btn btn-secondary">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- YouTube -->
+                <div class="platform-card">
+                    <div class="platform-header youtube">
+                        <div class="platform-logo">
+                            <span class="material-icons">play_arrow</span>
+                        </div>
+                        <h3 class="platform-name">YouTube</h3>
+                    </div>
+                    <div class="platform-body">
+                        <div class="platform-status">
+                            <div class="status-indicator disconnected"></div>
+                            <span>Not Connected</span>
+                        </div>
+                        <div class="platform-actions">
+                            <button class="btn" onclick="openConnectModal('youtube')">Connect</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="platform-help">
+                <div class="card">
+                    <h3 class="help-title">Need help with platform connections?</h3>
+                    <p>Our documentation includes step-by-step guides for connecting each social media platform:</p>
+                    <ul>
+                        <li><a href="#">Guide to connecting Twitter</a></li>
+                        <li><a href="#">Guide to connecting Instagram</a></li>
+                        <li><a href="#">Guide to connecting Facebook</a></li>
+                        <li><a href="#">Guide to connecting LinkedIn</a></li>
+                        <li><a href="#">Guide to connecting TikTok</a></li>
+                        <li><a href="#">Guide to connecting YouTube</a></li>
+                    </ul>
+                    <p>For additional assistance, please contact our support team.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Connect Platform Modal -->
+    <div class="modal" id="connectModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeConnectModal()">&times;</span>
+            <h2 id="connectModalTitle">Connect New Platform</h2>
+            
+            <form id="connectForm">
+                <div class="form-group">
+                    <label class="form-label">Select Platform</label>
+                    <select class="form-select" id="platformSelect">
+                        <option value="">Select a platform</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                </div>
+                
+                <div id="twitterAuth" class="auth-section" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">API Key</label>
+                        <input type="text" class="form-input" placeholder="Enter your Twitter API Key">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">API Secret</label>
+                        <input type="password" class="form-input" placeholder="Enter your Twitter API Secret">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Access Token</label>
+                        <input type="text" class="form-input" placeholder="Enter your Twitter Access Token">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Access Token Secret</label>
+                        <input type="password" class="form-input" placeholder="Enter your Twitter Access Token Secret">
+                    </div>
+                </div>
+                
+                <div id="fbInstagramAuth" class="auth-section" style="display: none;">
+                    <div class="connection-steps">
+                        <p>Follow these steps to connect your Facebook/Instagram account:</p>
+                        
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <p>Log in to your Facebook account and go to <a href="https://developers.facebook.com/" target="_blank">Facebook for Developers</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <p>Create a new app or select an existing app</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <p>Copy your App ID and App Secret from the app dashboard</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">App ID</label>
+                            <input type="text" class="form-input" placeholder="Enter your Facebook App ID">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">App Secret</label>
+                            <input type="password" class="form-input" placeholder="Enter your Facebook App Secret">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="otherAuth" class="auth-section" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Authorization URL</label>
+                        <p class="form-help">Click the button below to authorize this application to access your account.</p>
+                        <button type="button" class="btn" id="authButton">Authorize Access</button>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" onclick="closeConnectModal()">Cancel</button>
+                    <button type="submit" class="btn">Connect Platform</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Platform selection handling
+        document.getElementById('platformSelect').addEventListener('change', function() {
+            const platform = this.value;
+            
+            // Hide all auth sections
+            document.querySelectorAll('.auth-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show the appropriate auth section
+            if (platform === 'twitter') {
+                document.getElementById('twitterAuth').style.display = 'block';
+            } else if (platform === 'facebook' || platform === 'instagram') {
+                document.getElementById('fbInstagramAuth').style.display = 'block';
+            } else if (platform) {
+                document.getElementById('otherAuth').style.display = 'block';
+            }
+        });
+        
+        // Connect Modal Functions
+        function openConnectModal(platform = '') {
+            const modal = document.getElementById('connectModal');
+            modal.style.display = 'flex';
+            
+            if (platform) {
+                // Pre-select platform if provided
+                const select = document.getElementById('platformSelect');
+                select.value = platform;
+                
+                // Trigger change event to show the appropriate auth section
+                const event = new Event('change');
+                select.dispatchEvent(event);
+                
+                // Update modal title
+                document.getElementById('connectModalTitle').textContent = `Connect ${platform.charAt(0).toUpperCase() + platform.slice(1)}`;
+            } else {
+                document.getElementById('connectModalTitle').textContent = 'Connect New Platform';
+            }
+        }
+        
+        function closeConnectModal() {
+            document.getElementById('connectModal').style.display = 'none';
+            
+            // Reset the form
+            document.getElementById('connectForm').reset();
+            document.querySelectorAll('.auth-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById('connectModalTitle').textContent = 'Connect New Platform';
+        }
+        
+        // Form submission handling
+        document.getElementById('connectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const platform = document.getElementById('platformSelect').value;
+            if (!platform) {
+                alert('Please select a platform');
+                return;
+            }
+            
+            // Simulate connection
+            alert(`Successfully connected to ${platform}!`);
+            closeConnectModal();
+            
+            // In a real application, you would send the credentials to your backend
+            // and handle the OAuth flow or API key validation
+        });
+        
+        // Auth button click handler
+        document.getElementById('authButton').addEventListener('click', function() {
+            const platform = document.getElementById('platformSelect').value;
+            
+            // In a real application, this would redirect to the platform's OAuth authorization page
+            window.open(`#${platform}-auth`, '_blank');
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('connectModal');
+            if (e.target === modal) {
+                closeConnectModal();
+            }
+        });
+    </script>
+</body>
+</html>

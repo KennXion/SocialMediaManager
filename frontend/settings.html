@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        /* Light/Dark mode base styles */
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --border-color: #dddddd;
+            --hover-color: #e3f2fd;
+            --active-color: #bbdefb;
+            --shadow-color: rgba(0,0,0,0.1);
+        }
+        
+        .dark-mode {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --primary-color: #2196f3;
+            --primary-dark: #0d47a1;
+            --border-color: #333333;
+            --hover-color: #1a2733;
+            --active-color: #0d3a63;
+            --shadow-color: rgba(0,0,0,0.3);
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .app-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .app-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-toggle {
+            cursor: pointer;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            box-shadow: 2px 0 4px var(--shadow-color);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: var(--hover-color);
+        }
+        .menu-item.active {
+            background-color: var(--active-color);
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        .subheading {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div class="app-bar-right">
+            <span class="material-icons theme-toggle" id="theme-toggle">dark_mode</span>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item" onclick="window.location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='scheduler.html';">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='ai-generator.html';">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='platforms.html';">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item active" onclick="window.location.href='settings.html';">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <h2>Settings</h2>
+            
+            <div class="settings-grid">
+                <div class="card">
+                    <h3 class="subheading">Appearance</h3>
+                    <div class="toggle-container">
+                        <span>Dark Mode</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <span>Compact View</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Primary Color</label>
+                        <select class="form-select">
+                            <option value="blue">Blue (Default)</option>
+                            <option value="purple">Purple</option>
+                            <option value="green">Green</option>
+                            <option value="orange">Orange</option>
+                            <option value="red">Red</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="subheading">Account</h3>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" value="user@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Change Password</label>
+                        <input type="password" class="form-input" placeholder="Current Password">
+                        <input type="password" class="form-input" placeholder="New Password" style="margin-top: 0.5rem;">
+                        <input type="password" class="form-input" placeholder="Confirm New Password" style="margin-top: 0.5rem;">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="subheading">Notifications</h3>
+                    <div class="toggle-container">
+                        <span>Email Notifications</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <span>Push Notifications</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <span>Post Publishing Alerts</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <span>Analytics Reports</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="subheading">Default Post Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label">Default Post Privacy</label>
+                        <select class="form-select">
+                            <option value="public">Public</option>
+                            <option value="followers">Followers Only</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Default Platforms</label>
+                        <div id="default-platforms">
+                            <!-- Will be populated from API -->
+                            <p>Loading platforms...</p>
+                        </div>
+                    </div>
+                    <div class="toggle-container">
+                        <span>Auto-Tagging</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <button class="btn" id="save-settings">Save Settings</button>
+                <button class="btn" style="background-color: #f5f5f5; color: var(--text-color); border: 1px solid var(--border-color);">Cancel</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            const savedTheme = localStorage.getItem('theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            // Apply saved theme
+            if (savedTheme === 'dark') {
+                htmlElement.classList.add('dark-mode');
+                themeToggle.textContent = 'light_mode';
+                darkModeToggle.checked = true;
+            } else {
+                htmlElement.classList.remove('dark-mode');
+                themeToggle.textContent = 'dark_mode';
+                darkModeToggle.checked = false;
+            }
+            
+            // Toggle theme on click
+            themeToggle.addEventListener('click', function() {
+                if (htmlElement.classList.contains('dark-mode')) {
+                    htmlElement.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = 'dark_mode';
+                    darkModeToggle.checked = false;
+                } else {
+                    htmlElement.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = 'light_mode';
+                    darkModeToggle.checked = true;
+                }
+            });
+            
+            // Toggle theme from settings switch
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    htmlElement.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = 'light_mode';
+                } else {
+                    htmlElement.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = 'dark_mode';
+                }
+            });
+            
+            // Load platforms for default selection
+            loadPlatforms();
+            
+            // Save settings handler
+            document.getElementById('save-settings').addEventListener('click', function() {
+                alert('Settings saved successfully!');
+            });
+        });
+        
+        // Load platforms from localStorage or API
+        function loadPlatforms() {
+            const platformsContainer = document.getElementById('default-platforms');
+            
+            // Try to get platforms from localStorage
+            const storedPlatforms = localStorage.getItem('platforms');
+            
+            if (storedPlatforms) {
+                const platforms = JSON.parse(storedPlatforms);
+                renderPlatformCheckboxes(platforms);
+            } else {
+                // Fetch from API if not in localStorage
+                fetch('http://localhost:8000/api/platforms')
+                    .then(response => response.json())
+                    .then(platforms => {
+                        renderPlatformCheckboxes(platforms);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching platforms:', error);
+                        platformsContainer.innerHTML = `
+                            <p>Error loading platforms. Please try again later.</p>
+                        `;
+                    });
+            }
+        }
+        
+        // Render platform checkboxes
+        function renderPlatformCheckboxes(platforms) {
+            const platformsContainer = document.getElementById('default-platforms');
+            
+            const checkboxesHTML = platforms.map(platform => `
+                <div style="margin-bottom: 0.5rem;">
+                    <input type="checkbox" id="${platform.id}-checkbox" ${platform.status === 'connected' ? '' : 'disabled'}>
+                    <label for="${platform.id}-checkbox" style="${platform.status === 'connected' ? '' : 'color: var(--text-secondary);'}">
+                        ${platform.name} ${platform.status === 'connected' ? '' : '(Not Connected)'}
+                    </label>
+                </div>
+            `).join('');
+            
+            platformsContainer.innerHTML = checkboxesHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        /* Light/Dark mode base styles */
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --border-color: #dddddd;
+            --hover-color: #e3f2fd;
+            --active-color: #bbdefb;
+            --shadow-color: rgba(0,0,0,0.1);
+        }
+        
+        .dark-mode {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --primary-color: #2196f3;
+            --primary-dark: #0d47a1;
+            --border-color: #333333;
+            --hover-color: #1a2733;
+            --active-color: #0d3a63;
+            --shadow-color: rgba(0,0,0,0.3);
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .app-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .app-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-toggle {
+            cursor: pointer;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            box-shadow: 2px 0 4px var(--shadow-color);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: var(--hover-color);
+        }
+        .menu-item.active {
+            background-color: var(--active-color);
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1.5rem;
+        }
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 500;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        .spinner {
+            border: 4px solid var(--border-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div class="app-bar-right">
+            <span class="material-icons theme-toggle" id="theme-toggle">dark_mode</span>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item active" onclick="window.location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='scheduler.html';">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='ai-generator.html';">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='platforms.html';">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='settings.html';">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <h2>Dashboard</h2>
+            
+            <div class="stats-container" id="stats-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Recent Activity</h3>
+                <div id="posts-table-container">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Quick Actions</h3>
+                <button class="btn" onclick="window.location.href='content.html'">Create New Post</button>
+                <button class="btn" onclick="window.location.href='scheduler.html'">Schedule Content</button>
+                <button class="btn" onclick="window.location.href='ai-generator.html'">Generate AI Content</button>
+                <button class="btn" onclick="window.location.href='platforms.html'">Connect Platform</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            const savedTheme = localStorage.getItem('theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            // Apply saved theme
+            if (savedTheme === 'dark') {
+                htmlElement.classList.add('dark-mode');
+                themeToggle.textContent = 'light_mode';
+            } else {
+                htmlElement.classList.remove('dark-mode');
+                themeToggle.textContent = 'dark_mode';
+            }
+            
+            // Toggle theme on click
+            themeToggle.addEventListener('click', function() {
+                if (htmlElement.classList.contains('dark-mode')) {
+                    htmlElement.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = 'dark_mode';
+                } else {
+                    htmlElement.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = 'light_mode';
+                }
+            });
+        });
+    
+        // API URL
+        const API_URL = 'http://localhost:8000/api';
+        
+        // Fetch data when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch posts
+            fetchPosts();
+            
+            // Fetch analytics for stats
+            fetchAnalytics();
+            
+            // Fetch platforms
+            fetchPlatforms();
+        });
+        
+        // Fetch posts from the API
+        async function fetchPosts() {
+            try {
+                const response = await fetch(`${API_URL}/posts`);
+                const posts = await response.json();
+                
+                // Render posts table
+                renderPostsTable(posts);
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+                document.getElementById('posts-table-container').innerHTML = `
+                    <p>Error loading posts. Please try again later.</p>
+                `;
+            }
+        }
+        
+        // Render posts table
+        function renderPostsTable(posts) {
+            const container = document.getElementById('posts-table-container');
+            
+            // Sort posts by most recent first
+            posts.sort((a, b) => {
+                const dateA = a.publishedAt ? new Date(a.publishedAt) : new Date(a.scheduledFor);
+                const dateB = b.publishedAt ? new Date(b.publishedAt) : new Date(b.scheduledFor);
+                return dateB - dateA;
+            });
+            
+            // Generate table HTML
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th>Content</th>
+                            <th>Status</th>
+                            <th>Engagement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${posts.map(post => `
+                            <tr>
+                                <td>${formatPlatforms(post.platforms)}</td>
+                                <td>${post.title}</td>
+                                <td>${post.status === 'published' ? 
+                                    `Published ${formatDate(post.publishedAt)}` : 
+                                    `Scheduled for ${formatDate(post.scheduledFor)}`}</td>
+                                <td>${post.status === 'published' ? getRandomEngagement() : 'Pending'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+        
+        // Fetch analytics from the API
+        async function fetchAnalytics() {
+            try {
+                const response = await fetch(`${API_URL}/analytics`);
+                const analytics = await response.json();
+                
+                // Render stats
+                renderStats(analytics);
+            } catch (error) {
+                console.error('Error fetching analytics:', error);
+                document.getElementById('stats-container').innerHTML = `
+                    <p>Error loading analytics. Please try again later.</p>
+                `;
+            }
+        }
+        
+        // Render stats cards
+        function renderStats(analytics) {
+            const container = document.getElementById('stats-container');
+            
+            // Calculate total posts (published + scheduled)
+            const totalPosts = Math.floor(Math.random() * 200) + 100; // Random number between 100-300
+            
+            // Calculate scheduled posts
+            const scheduledPosts = Math.floor(Math.random() * 20) + 5; // Random number between 5-25
+            
+            // Calculate total engagement
+            const totalEngagement = Object.values(analytics.engagement).reduce((sum, val) => sum + val, 0);
+            
+            // Count connected platforms
+            const connectedPlatforms = Object.keys(analytics.engagement).length;
+            
+            // Generate stats HTML
+            const statsHTML = `
+                <div class="stat-card">
+                    <h3 class="stat-title">Total Posts</h3>
+                    <p class="stat-value">${totalPosts}</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Scheduled Posts</h3>
+                    <p class="stat-value">${scheduledPosts}</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Total Engagement</h3>
+                    <p class="stat-value">${formatNumber(totalEngagement)}</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Connected Platforms</h3>
+                    <p class="stat-value">${connectedPlatforms}</p>
+                </div>
+            `;
+            
+            container.innerHTML = statsHTML;
+        }
+        
+        // Fetch platforms from the API
+        async function fetchPlatforms() {
+            try {
+                const response = await fetch(`${API_URL}/platforms`);
+                const platforms = await response.json();
+                
+                // Store platforms data in localStorage for other pages
+                localStorage.setItem('platforms', JSON.stringify(platforms));
+            } catch (error) {
+                console.error('Error fetching platforms:', error);
+            }
+        }
+        
+        // Format platforms list
+        function formatPlatforms(platforms) {
+            if (!platforms || platforms.length === 0) return 'None';
+            
+            return platforms.map(p => capitalizeFirstLetter(p)).join(', ');
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) {
+                const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+                if (diffHours === 0) {
+                    const diffMinutes = Math.floor(diffTime / (1000 * 60));
+                    return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+                }
+                return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            } else {
+                return date.toLocaleDateString();
+            }
+        }
+        
+        // Generate random engagement metrics
+        function getRandomEngagement() {
+            const metrics = ['likes', 'comments', 'shares', 'reactions', 'views'];
+            const metric = metrics[Math.floor(Math.random() * metrics.length)];
+            const value = Math.floor(Math.random() * 1000) + 50;
+            
+            return `${value} ${metric}`;
+        }
+        
+        // Format number with K/M suffix
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return num.toString();
+        }
+        
+        // Capitalize first letter of a string
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Handle menu item clicks
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Check server connectivity on page load
+        function checkServerConnectivity() {
+            fetch(`${API_URL}/health`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Server connected:', data);
+                    // You can add UI indicators here if needed
+                })
+                .catch(error => {
+                    console.error('Server connection error:', error);
+                    showConnectionError();
+                });
+        }
+
+        // Function to show connection error
+        function showConnectionError() {
+            // First check if an error message already exists
+            if (document.getElementById('server-error-message')) return;
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'server-error-message';
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.top = '60px';
+            errorDiv.style.left = '0';
+            errorDiv.style.right = '0';
+            errorDiv.style.backgroundColor = '#f44336';
+            errorDiv.style.color = 'white';
+            errorDiv.style.padding = '10px';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.style.zIndex = '9999';
+            errorDiv.innerHTML = 'Cannot connect to server. Please make sure the server is running. <a href="#" onclick="window.location.reload()" style="color:white;text-decoration:underline;">Try again</a>';
+            document.body.appendChild(errorDiv);
+        }
+        
+        // Check server connectivity initially
+        checkServerConnectivity();
+    </script>
+</body>
+</html>

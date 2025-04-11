@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Scheduler - Social Media Manager</title>
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .app-bar {
+            background-color: #2196f3;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .main-content {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: #e3f2fd;
+        }
+        .menu-item.active {
+            background-color: #bbdefb;
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            color: #2196f3;
+        }
+        .menu-text {
+            font-size: 0.9rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #1976d2;
+        }
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .weekday {
+            padding: 0.5rem;
+            color: #666;
+        }
+        .day-cell {
+            min-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.5rem;
+            background-color: white;
+        }
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .day-number {
+            font-weight: 500;
+        }
+        .day-add {
+            cursor: pointer;
+            color: #2196f3;
+        }
+        .schedule-item {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.5rem;
+            border-radius: 3px;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .twitter {
+            background-color: #e8f5fd;
+            border-left: 3px solid #1da1f2;
+        }
+        .instagram {
+            background-color: #fce3f0;
+            border-left: 3px solid #c13584;
+        }
+        .facebook {
+            background-color: #e8f0fb;
+            border-left: 3px solid #4267B2;
+        }
+        .linkedin {
+            background-color: #e1f0f9;
+            border-left: 3px solid #0077b5;
+        }
+        .tiktok {
+            background-color: #f0f0f0;
+            border-left: 3px solid #000000;
+        }
+        .youtube {
+            background-color: #ffebee;
+            border-left: 3px solid #FF0000;
+        }
+        .other-month {
+            background-color: #f9f9f9;
+            color: #999;
+        }
+        .today {
+            border: 2px solid #2196f3;
+        }
+        .queue-container {
+            margin-top: 2rem;
+        }
+        .queue-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .queue-platform {
+            flex: 0 0 100px;
+        }
+        .queue-content {
+            flex: 1;
+            padding: 0 1rem;
+        }
+        .queue-time {
+            flex: 0 0 150px;
+            color: #666;
+        }
+        .queue-actions {
+            flex: 0 0 100px;
+            text-align: right;
+        }
+        .platform-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        .form-textarea {
+            min-height: 100px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <h1 class="app-title">Social Media Manager</h1>
+        <div>
+            <span class="material-icons">account_circle</span>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="menu-item" onclick="location.href='index.html';">
+                <span class="material-icons menu-icon">dashboard</span>
+                <span class="menu-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="location.href='content.html';">
+                <span class="material-icons menu-icon">edit</span>
+                <span class="menu-text">Content</span>
+            </div>
+            <div class="menu-item active" onclick="location.href='scheduler.html';">
+                <span class="material-icons menu-icon">calendar_today</span>
+                <span class="menu-text">Schedule</span>
+            </div>
+            <div class="menu-item" onclick="location.href='analytics.html';">
+                <span class="material-icons menu-icon">analytics</span>
+                <span class="menu-text">Analytics</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">cloud</span>
+                <span class="menu-text">AI Generator</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">share</span>
+                <span class="menu-text">Platforms</span>
+            </div>
+            <div class="menu-item">
+                <span class="material-icons menu-icon">settings</span>
+                <span class="menu-text">Settings</span>
+            </div>
+        </aside>
+        
+        <section class="content">
+            <div class="toolbar">
+                <h2>Content Scheduler</h2>
+                <div>
+                    <button class="btn" onclick="openScheduleModal()">Schedule New Post</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <span class="material-icons" style="cursor: pointer;">chevron_left</span>
+                        <h3 class="calendar-title">April 2025</h3>
+                        <span class="material-icons" style="cursor: pointer;">chevron_right</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary">Today</button>
+                        <select class="form-select" style="display: inline-block; width: auto; margin-left: 0.5rem;">
+                            <option>Month</option>
+                            <option>Week</option>
+                            <option>List</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="calendar-weekdays">
+                    <div class="weekday">Sun</div>
+                    <div class="weekday">Mon</div>
+                    <div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div>
+                    <div class="weekday">Thu</div>
+                    <div class="weekday">Fri</div>
+                    <div class="weekday">Sat</div>
+                </div>
+                
+                <div class="calendar">
+                    <!-- Week 1 -->
+                    <div class="day-cell other-month">
+                        <div class="day-header">
+                            <span class="day-number">30</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell other-month">
+                        <div class="day-header">
+                            <span class="day-number">31</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">1</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item instagram">Instagram: Product Feature</div>
+                        <div class="schedule-item linkedin">LinkedIn: Industry Update</div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">2</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">3</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item facebook">Facebook: Customer Story</div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">4</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">5</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item instagram">Instagram: User Testimonial</div>
+                    </div>
+                    
+                    <!-- Week 2 -->
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">6</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">7</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item tiktok">TikTok: Product Demo</div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">8</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item twitter">Twitter: Industry News</div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">9</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell today">
+                        <div class="day-header">
+                            <span class="day-number">10</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item youtube">YouTube: Tutorial Video</div>
+                        <div class="schedule-item instagram">Instagram: Event Announcement</div>
+                        <div class="schedule-item linkedin">LinkedIn: Company Update</div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">11</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">12</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Weeks 3-5 would continue here -->
+                    <!-- For brevity, adding just a few more days -->
+                    
+                    <!-- Week 3 (partial) -->
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">13</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">14</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item facebook">Facebook: Product Announcement</div>
+                    </div>
+                    <div class="day-cell">
+                        <div class="day-header">
+                            <span class="day-number">15</span>
+                            <span class="material-icons day-add">add_circle_outline</span>
+                        </div>
+                        <div class="schedule-item twitter">Twitter: Industry Tip</div>
+                        <div class="schedule-item instagram">Instagram: UGC Feature</div>
+                    </div>
+                    <!-- Continue with more days -->
+                </div>
+            </div>
+            
+            <div class="queue-container">
+                <h3>Upcoming Posts</h3>
+                <div class="queue-item">
+                    <div class="queue-platform">
+                        <span class="platform-tag instagram">Instagram</span>
+                    </div>
+                    <div class="queue-content">
+                        Event Announcement: Join us for our virtual product launch next week!
+                    </div>
+                    <div class="queue-time">
+                        Today, 3:00 PM
+                    </div>
+                    <div class="queue-actions">
+                        <span class="material-icons" style="cursor: pointer; color: #2196f3;">edit</span>
+                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                    </div>
+                </div>
+                <div class="queue-item">
+                    <div class="queue-platform">
+                        <span class="platform-tag linkedin">LinkedIn</span>
+                    </div>
+                    <div class="queue-content">
+                        Company Update: We're excited to announce our Q1 results...
+                    </div>
+                    <div class="queue-time">
+                        Today, 4:30 PM
+                    </div>
+                    <div class="queue-actions">
+                        <span class="material-icons" style="cursor: pointer; color: #2196f3;">edit</span>
+                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                    </div>
+                </div>
+                <div class="queue-item">
+                    <div class="queue-platform">
+                        <span class="platform-tag youtube">YouTube</span>
+                    </div>
+                    <div class="queue-content">
+                        Tutorial Video: How to get the most out of our latest feature set
+                    </div>
+                    <div class="queue-time">
+                        Today, 5:00 PM
+                    </div>
+                    <div class="queue-actions">
+                        <span class="material-icons" style="cursor: pointer; color: #2196f3;">edit</span>
+                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                    </div>
+                </div>
+                <div class="queue-item">
+                    <div class="queue-platform">
+                        <span class="platform-tag twitter">Twitter</span>
+                    </div>
+                    <div class="queue-content">
+                        Industry Tip: 5 ways to improve your workflow with automation
+                    </div>
+                    <div class="queue-time">
+                        Apr 15, 10:00 AM
+                    </div>
+                    <div class="queue-actions">
+                        <span class="material-icons" style="cursor: pointer; color: #2196f3;">edit</span>
+                        <span class="material-icons" style="cursor: pointer; color: #f44336;">delete</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Schedule Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeScheduleModal()">&times;</span>
+            <h2>Schedule New Post</h2>
+            
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label class="form-label">Title/Campaign Name</label>
+                    <input type="text" class="form-input" placeholder="Enter a title for internal reference">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Platform</label>
+                    <select class="form-select">
+                        <option>Twitter</option>
+                        <option>Instagram</option>
+                        <option>Facebook</option>
+                        <option>LinkedIn</option>
+                        <option>TikTok</option>
+                        <option>YouTube</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <textarea class="form-textarea" placeholder="Write your post content here..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Media</label>
+                    <input type="file" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Schedule Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Schedule Time</label>
+                    <input type="time" class="form-input">
+                </div>
+                
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+                    <button type="submit" class="btn">Schedule Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Schedule Modal Functions
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'flex';
+        }
+        
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+        }
+        
+        // Form submission prevention
+        document.getElementById('scheduleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Post scheduled successfully!');
+            closeScheduleModal();
+        });
+        
+        // Open modal when clicking the add button on a day
+        document.querySelectorAll('.day-add').forEach(btn => {
+            btn.addEventListener('click', openScheduleModal);
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('scheduleModal');
+            if (e.target === modal) {
+                closeScheduleModal();
+            }
+        });
+    </script>
+</body>
+</html>

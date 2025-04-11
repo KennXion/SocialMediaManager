@@ -1,0 +1,70 @@
+---
+# Backend deployment tasks
+
+- name: Clone the repository
+  git:
+    repo: "{{ repository_url | default('https://github.com/user/social-media-manager.git') }}"
+    dest: /opt/social-media-manager
+    version: "{{ repository_branch | default('main') }}"
+  when: repository_url is defined
+
+- name: Create Python virtual environment
+  pip:
+    virtualenv: /opt/social-media-manager/venv
+    virtualenv_command: python3 -m venv
+    name:
+      - pip
+      - setuptools
+      - wheel
+    state: latest
+
+- name: Install backend dependencies
+  pip:
+    requirements: /opt/social-media-manager/backend/requirements.txt
+    virtualenv: /opt/social-media-manager/venv
+  when: repository_url is defined
+
+- name: Copy Docker Compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/social-media-manager/docker-compose.yml
+    mode: '0644'
+
+- name: Copy backend source files
+  synchronize:
+    src: "{{ backend_source_path | default('/Volumes/CrucialMedia-4G/Social_Media_Manager/backend') }}"
+    dest: /opt/social-media-manager/
+  when: backend_source_path is defined
+
+- name: Copy backend Dockerfile
+  template:
+    src: Dockerfile.backend.j2
+    dest: /opt/social-media-manager/backend/Dockerfile
+    mode: '0644'
+
+- name: Set up environment variables
+  template:
+    src: .env.j2
+    dest: /opt/social-media-manager/backend/.env
+    mode: '0644'
+
+- name: Initialize database
+  shell: 
+    cmd: |
+      source /opt/social-media-manager/venv/bin/activate
+      cd /opt/social-media-manager/backend
+      python -m alembic upgrade head
+    executable: /bin/bash
+  when: init_database | default(false) | bool
+
+- name: Start backend services
+  docker_compose:
+    project_src: /opt/social-media-manager
+    files:
+      - docker-compose.yml
+    services:
+      - db
+      - redis
+      - backend
+    state: present
+    restarted: yes

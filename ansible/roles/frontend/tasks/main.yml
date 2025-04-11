@@ -1,0 +1,51 @@
+---
+# Frontend deployment tasks
+
+- name: Ensure Node.js is installed
+  package:
+    name:
+      - nodejs
+      - npm
+    state: present
+
+- name: Copy frontend source files
+  synchronize:
+    src: "{{ frontend_source_path | default('/Volumes/CrucialMedia-4G/Social_Media_Manager/frontend') }}"
+    dest: /opt/social-media-manager/
+  when: frontend_source_path is defined
+
+- name: Copy frontend Dockerfile
+  template:
+    src: Dockerfile.frontend.j2
+    dest: /opt/social-media-manager/frontend/Dockerfile
+    mode: '0644'
+
+- name: Set up environment variables
+  template:
+    src: .env.j2
+    dest: /opt/social-media-manager/frontend/.env
+    mode: '0644'
+
+- name: Install frontend dependencies
+  npm:
+    path: /opt/social-media-manager/frontend
+    state: present
+  when: install_dependencies | default(false) | bool
+
+- name: Build frontend
+  shell:
+    cmd: |
+      cd /opt/social-media-manager/frontend
+      npm run build
+    executable: /bin/bash
+  when: build_frontend | default(false) | bool
+
+- name: Start frontend service
+  docker_compose:
+    project_src: /opt/social-media-manager
+    files:
+      - docker-compose.yml
+    services:
+      - frontend
+    state: present
+    restarted: yes
