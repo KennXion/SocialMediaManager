@@ -40,6 +40,9 @@ import DoneIcon from '@mui/icons-material/Done';
 // Import calendar components
 import EventCalendar from '../../components/calendar/EventCalendar';
 
+// Import sample data
+import { sampleEvents, samplePosts } from '../../data/sampleEvents';
+
 import { fetchPosts, fetchPost, updatePost } from '../../store/slices/postSlice';
 import { fetchSchedules, createSchedule, updateSchedule, deleteSchedule } from '../../store/slices/scheduleSlice';
 
@@ -57,7 +60,13 @@ const ContentScheduler = () => {
   const schedulesState = useSelector((state) => state.schedules);
   
   // Handle possible null or undefined schedules with defensive programming
-  const schedules = Array.isArray(schedulesState.schedules) ? schedulesState.schedules : [];
+  const schedules = Array.isArray(schedulesState.schedules) && schedulesState.schedules.length > 0 
+    ? schedulesState.schedules 
+    : sampleEvents; // Use sample events if no real events exist
+  
+  // Use either real posts or sample posts if no posts exist
+  const allPosts = Array.isArray(posts) && posts.length > 0 ? posts : samplePosts;
+  
   const { saving: scheduleSaving, loading: scheduleLoading, error: scheduleError } = schedulesState;
   
   // Local state
@@ -229,7 +238,7 @@ const ContentScheduler = () => {
   
   // Get post title by ID
   const getPostTitle = (postId) => {
-    const post = posts.find(p => p.id === postId);
+    const post = allPosts.find(p => p.id === postId);
     return post ? post.title : 'Unknown Post';
   };
   
@@ -299,12 +308,12 @@ const ContentScheduler = () => {
             <EventCalendar
               events={schedules.map(schedule => {
                 // Find the associated post
-                const post = posts.find(p => p.id === schedule.postId) || {};
+                const post = allPosts.find(p => p.id === schedule.postId) || {};
                 
                 return {
                   ...schedule,
-                  title: post.title || 'Untitled Post',
-                  platform: post.platform || 'default'
+                  title: post.title || schedule.title || 'Untitled Post',
+                  platform: post.platform || schedule.platform || 'default'
                 };
               })}
               onEventClick={handleEventClick}
@@ -400,7 +409,7 @@ const ContentScheduler = () => {
                   <MenuItem value="">
                     <em>Select a post</em>
                   </MenuItem>
-                  {posts
+                  {allPosts
                     .filter(post => post.status !== 'published')
                     .map((post) => (
                       <MenuItem key={post.id} value={post.id}>
