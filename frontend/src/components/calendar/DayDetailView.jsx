@@ -1,28 +1,28 @@
 import React from 'react';
-import { 
-  Box, 
-  Paper, 
-  Typography, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  ListItemIcon, 
+import {
+  Box,
+  Paper,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   ListItemSecondaryAction,
   IconButton,
-  Chip,
   Divider,
+  Chip,
   useTheme
 } from '@mui/material';
-import { format, isSameDay } from 'date-fns';
+import { format, parseISO, isSameDay } from 'date-fns';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import PublicIcon from '@mui/icons-material/Public';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 // Platform icon component
 const PlatformIcon = ({ platform }) => {
@@ -40,19 +40,23 @@ const PlatformIcon = ({ platform }) => {
   }
 };
 
-const ScheduleList = ({ 
+const DayDetailView = ({ 
   selectedDate, 
   schedules = [], 
-  posts = [], 
-  onEdit, 
+  posts = [],
+  onEdit,
   onDelete 
 }) => {
   const theme = useTheme();
   
+  if (!selectedDate) {
+    return null;
+  }
+  
   // Filter schedules for selected date
   const daySchedules = schedules.filter(schedule => {
-    const scheduleDate = new Date(schedule.scheduledAt);
-    return selectedDate && isSameDay(scheduleDate, selectedDate);
+    const scheduleDate = parseISO(schedule.scheduledAt);
+    return isSameDay(scheduleDate, selectedDate);
   });
   
   // Sort schedules by time
@@ -67,44 +71,47 @@ const ScheduleList = ({
   
   // Format time for display
   const formatTime = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return format(date, 'h:mm a');
+    try {
+      const date = parseISO(dateString);
+      return format(date, 'h:mm a');
+    } catch (error) {
+      return '';
+    }
   };
   
   return (
-    <Paper elevation={0} sx={{ p: 2 }}>
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        p: 2, 
+        mt: 2,
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: 2
+      }}
+    >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <CalendarTodayIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
           <Typography variant="h6">
-            Scheduled Posts
+            {format(selectedDate, 'EEEE, MMMM d, yyyy')}
           </Typography>
-          {selectedDate && (
-            <Typography variant="subtitle1" color="text.secondary">
-              {format(selectedDate, 'MMMM d, yyyy')}
-            </Typography>
-          )}
         </Box>
         
         <Chip 
-          icon={<EventNoteIcon />} 
-          label={`${sortedSchedules.length} post${sortedSchedules.length !== 1 ? 's' : ''}`}
+          label={`${sortedSchedules.length} post${sortedSchedules.length !== 1 ? 's' : ''} scheduled`}
           color="primary"
           variant="outlined"
+          size="small"
         />
       </Box>
       
       {sortedSchedules.length === 0 ? (
-        <Box sx={{ 
-          py: 4, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center',
-          color: 'text.secondary'
-        }}>
-          <EventNoteIcon sx={{ fontSize: 48, mb: 2, opacity: 0.7 }} />
+        <Box sx={{ py: 4, textAlign: 'center', color: 'text.secondary' }}>
           <Typography variant="body1">
             No posts scheduled for this day
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Click the "Schedule Post" button to add content
           </Typography>
         </Box>
       ) : (
@@ -114,38 +121,48 @@ const ScheduleList = ({
             
             return (
               <React.Fragment key={schedule.id}>
-                {index > 0 && <Divider component="li" />}
+                {index > 0 && <Divider component="li" variant="inset" />}
                 <ListItem alignItems="flex-start">
                   <ListItemIcon>
                     <PlatformIcon platform={post.platform} />
                   </ListItemIcon>
                   
                   <ListItemText
-                    primary={post.title || 'Untitled Post'}
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="subtitle1" component="span">
+                          {post.title || 'Untitled Post'}
+                        </Typography>
+                        <Chip
+                          icon={<AccessTimeIcon />}
+                          label={formatTime(schedule.scheduledAt)}
+                          size="small"
+                          sx={{ ml: 2 }}
+                          color="primary"
+                          variant="outlined"
+                        />
+                      </Box>
+                    }
                     secondary={
                       <React.Fragment>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                          <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5, color: theme.palette.text.secondary }} />
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component="span"
-                            variant="body2"
-                            color="text.secondary"
-                          >
-                            {formatTime(schedule.scheduledAt)}
-                          </Typography>
-                        </Box>
+                        <Typography
+                          sx={{ display: 'block', mt: 1 }}
+                          component="span"
+                          variant="body2"
+                          color="text.secondary"
+                        >
+                          {post.excerpt || post.content?.substring(0, 120)}
+                          {(post.excerpt?.length > 120 || post.content?.length > 120) ? '...' : ''}
+                        </Typography>
                         
-                        {post.excerpt && (
-                          <Typography
-                            sx={{ display: 'block', mt: 1 }}
-                            component="span"
-                            variant="body2"
-                            color="text.secondary"
-                          >
-                            {post.excerpt.slice(0, 60)}
-                            {post.excerpt.length > 60 ? '...' : ''}
-                          </Typography>
+                        {post.platform && (
+                          <Chip
+                            label={post.platform}
+                            size="small"
+                            sx={{ mt: 1 }}
+                            color="default"
+                            variant="outlined"
+                          />
                         )}
                       </React.Fragment>
                     }
@@ -156,19 +173,17 @@ const ScheduleList = ({
                       edge="end" 
                       aria-label="edit"
                       onClick={() => onEdit && onEdit(schedule.id)}
-                      size="small"
                       sx={{ mr: 1 }}
                     >
-                      <EditIcon fontSize="small" />
+                      <EditIcon />
                     </IconButton>
                     <IconButton 
                       edge="end" 
                       aria-label="delete"
                       onClick={() => onDelete && onDelete(schedule.id)}
-                      size="small"
                       color="error"
                     >
-                      <DeleteIcon fontSize="small" />
+                      <DeleteIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>
@@ -181,4 +196,4 @@ const ScheduleList = ({
   );
 };
 
-export default ScheduleList;
+export default DayDetailView;

@@ -38,8 +38,8 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import DoneIcon from '@mui/icons-material/Done';
 
 // Import calendar components
-import CalendarView from '../../components/calendar/CalendarView';
-import ScheduleList from '../../components/calendar/ScheduleList';
+import CalendarGrid from '../../components/calendar/CalendarGrid';
+import DayDetailView from '../../components/calendar/DayDetailView';
 
 import { fetchPosts, fetchPost, updatePost } from '../../store/slices/postSlice';
 import { fetchSchedules, createSchedule, updateSchedule, deleteSchedule } from '../../store/slices/scheduleSlice';
@@ -279,14 +279,14 @@ const ContentScheduler = () => {
         </Box>
       ) : viewMode === 'calendar' ? (
         <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <CalendarView 
+          <Grid item xs={12}>
+            <CalendarGrid
               schedules={schedules} 
-              onDateSelect={handleCalendarDateSelect}
+              posts={posts}
+              onSelectDate={handleCalendarDateSelect}
+              onEditSchedule={handleOpenDialog}
             />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <ScheduleList 
+            <DayDetailView 
               selectedDate={selectedDate}
               schedules={schedules}
               posts={posts}
